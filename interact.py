@@ -6,8 +6,6 @@ Created on Wed Apr 19 15:01:34 2017
 @author: rhdzmota
 """
 
-from snake_talk import *
-from pyBot import *
 from jokes import *
 
 # %% Sample message
@@ -86,42 +84,6 @@ def simulateEntry(n=1,message='#pycode print("hey")'):
 
 # %% Interpret
 
-def getUserProfilePic(sender='1657838257577411'):
-    from PIL import Image
-    import image_hosting as ih
-    import urllib.request
-    import requests
-    import os
-    
-    # set filename 
-    tempo_filename = "profilepic_{}.jpg".format(sender)
-    filename = "profilepic_{}.png".format(sender)
-    
-    # Page Access Token 
-    pat = 'EAAaiAN9H6KEBANNiZCZA1xnwt1wxd9twtZADhHkfvpWHCh8JaVd7CNZB61Yb0jMZA4KAFChAyDNz74ZCpoaWyvNGH2khu6N8LdVEzePFJZC6ueCfvM9Tm9R0d8Ebj4DoZC8CTNbrVISI3DB0MMZBFtNQRlvH9WRcc2xfhS1tCTNJyOQZDZD'
-    
-    # FB API for user's info 
-    userprofile_api = 'https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,profile_pic,gender&access_token={PAGE_ACCESS_TOKEN}'
-    
-    # get user's data 
-    temp = eval(requests.get(userprofile_api.format(USER_ID=sender,PAGE_ACCESS_TOKEN=pat)).text)
-    if not temp.get('profile_pic'):
-        return "https://www.dropbox.com/s/ph4kd5pmrln49oi/NotAvailable.png?dl=0"
-    urllib.request.urlretrieve(temp['profile_pic'].replace("\\",""), tempo_filename)
-    
-    # convert to .png 
-    im = Image.open(tempo_filename)
-    im.save(filename)
-    
-    # upload to dropbox
-    DBM = ih.DropBoxManager()
-    DBM.deleteFile(path="/profile_pics",filename=filename)
-    DBM.uploadFile(path="/profile_pics",filename=filename)
-    temo = DBM.getTemporaryUrl(path="/profile_pics",filename=filename)
-    os.remove(tempo_filename)
-    os.remove(filename)
-    print(temo['url'])
-    return temo['url']
 
 def getUserInfo(sender_id='1657838257577411'):
     import requests
@@ -129,16 +91,15 @@ def getUserInfo(sender_id='1657838257577411'):
     userprofile_api = 'https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,profile_pic,gender&access_token={PAGE_ACCESS_TOKEN}'
     return eval(requests.get(userprofile_api.format(USER_ID=sender_id,PAGE_ACCESS_TOKEN=pat)).text)
 
-# Parseltongue
 def firstGreetingMessage():
-    #_user = getUserInfo(sender).get('first_name')
-    #user_name =  _user if _user is not None else 'Pythonist'
+    _user = getUserInfo(sender).get('first_name')
+    user_name =  _user if _user is not None else 'there'
     _text = """\
-Hi there! 
+Hi {}! 
 
-My name is pyBot, the only bot that can talk with snakes! Use #py at the beginning of your code so I can speak Parseltongue with you!
+My name is sigma, your personal financial assistant!
     """
-    return _text#.format(user_name)
+    return _text.format(user_name)
 
 def deleteFirstWhitespace(text):
     return (text if text[0] != ' ' else deleteFirstWhitespace(text[1:])) 
@@ -237,82 +198,6 @@ def getResponseForHowAreYouAndOkays():
     return possible_responses[_list[int(len(_list)*_index)]]
     
 
-def identifyPyCode(text):
-    if "#py" in text.lower():
-        return 1
-    if "# py" in text.lower():
-        return 1
-    if "#python" in text.lower():
-        return 1
-    if "# python" in text.lower():
-        return 1
-    return 0
-
-def getPyCode(text):
-    
-    if text == '#py' or text == '# py' or text == '#py 'or text == ' #py ':
-        return 'print(No code found!)'
-    if text == '#python' or text == '# python':
-        return 'print(No code found!)'
-    
-    if 'python' in text.lower():
-        code = 'python'.join(text.split("python")[1:])#text.split("python")[-1]
-        return (code[1:] if code[0]==" " else code)
-    code = 'py'.join(text.split("py")[1:])
-    return (code[1:] if code[0]==" " else code)
-
-# Solve Integrals 
-
-def identifyIntegrals(text):
-    if 'integrate' in text.lower():
-        if 'from' in text.lower() and 'to' in text.lower():
-            return 1
-    return 0
-
-def getIntegralElements(text):
-    text = text.replace("^","**")
-    from_to = list(map(deleteFirstWhitespace,text.lower().split("from")[-1].split("to")))
-    return {"function":deleteFirstWhitespace(text.lower().split("from")[0].split("integrate")[-1]),
-            "from":from_to[0],"to":from_to[-1]}
-
-def integralAnswer(text):
-    answer = integralWrapper(getIntegralElements(text))
-    complete = "The result for your integral, using Monte-Carlo approx is: \n\n\t{}"
-    return complete.format(answer)
-
-# Matplotlib plots
-
-def identifyPlot(text):
-    if 'plot' in text.lower():
-        if 'from' in text.lower() and 'to' in text.lower():
-            return 1
-    return 0
-
-def getPlotElements(text):
-    text = text.replace("^","**")
-    from_to = list(map(deleteFirstWhitespace,text.lower().split("from")[-1].split("to")))
-    return {"function":deleteFirstWhitespace(text.lower().split("from")[0].split("plot")[-1]),
-            "from":from_to[0],"to":from_to[-1]}
-
-def makePlot(text,sender):
-    import image_hosting as ih
-    import os 
-    
-    # get filename
-    filename = plotWrapper(getPlotElements(text),sender)
-    
-    if filename is None:
-        return "https://www.dropbox.com/s/ph4kd5pmrln49oi/NotAvailable.png?dl=0"
-    
-    DBM = ih.DropBoxManager()
-    
-    # delete file 
-    DBM.deleteFile(path="/plots",filename=filename)
-    DBM.uploadFile(path="/plots",filename=filename)
-    temo = DBM.getTemporaryUrl(path="/plots",filename=filename)
-    os.remove(filename)
-    return temo['url']
-
 # Jokes 
 
 def identifyJoke(text):
@@ -331,31 +216,7 @@ def getOneJoke():
     return _text+chooseJoke()
 
 def myNameIs():
-    return 'My name is... Heissenberg!\n\nJK, you can call me pyBot.' 
-
-# Random
-
-def identifyCoin(text):
-    if 'flip' in text.lower() and 'coin' in text.lower():
-        return 1
-    return 0
-
-def identifyDice(text):
-    if 'roll' in text.lower() and 'dice' in text.lower():
-        return 1
-    return 0
-
-def identifyChoice(text):
-    if 'random choice:' in text.lower():
-        return 1
-    return 0
-
-def getRandomChoice(text):
-    elements = [elms for elms in text.split(':')[-1].replace(',',' ').split(" ") if elms != '']
-    if (elements is None) or (len(elements) == 0):
-        return "Sorry, I'm confused!"
-    return str(randomChoice(elements))
-    
+    return 'My name is... Heissenberg!\n\nJK, you can call me sigma.' 
 
 # generic message 
 
@@ -423,13 +284,9 @@ You can use #py before writing some python code and I'll certainly understand. L
 
 def generateResponse(text,sender):
     
-    if identifyPyCode(text):
-        text_script = getPyCode(text)
-        SP = SpeakPython(script=text_script,user=sender)
-        return SP.interpret(),'text'
     
     if identifyShortMessageAndGreeting(text):
-        return genericGreetingMesasge(sender),'text'
+        return firstGreetingMessage(sender),'text'
     
     if identifyWhoYouAre(text):
         return firstGreetingMessage(sender),'text'
@@ -440,29 +297,11 @@ def generateResponse(text,sender):
     if identifyHowAreYou(text):
         return getResponseForHowAreYouAndOkays(),'text'
     
-    if identifyIntegrals(text):
-        return integralAnswer(text),'text'
-        
-    if identifyPlot(text):
-        return makePlot(text,sender),'image'
-    
     if identifyJoke(text):
         return getOneJoke(),'text'
     
     if identifySendNudes(text):
         return sendNudes(),'image'
-    
-    if identifyMe(text):
-        return getUserProfilePic(sender),'text'
-        
-    if identifyCoin(text):
-        return flipCoin(),'text'
-    
-    if identifyDice(text):
-        return rollDice(),'text'
-    
-    if identifyChoice(text):
-        return getRandomChoice(text),'text'
     
     return IDontUnserstand(sender),'text'
 

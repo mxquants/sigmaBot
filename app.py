@@ -27,7 +27,7 @@ def verify():
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
-    return render_template('index.html'), 200#"Hello world, this is pyBot by mxquants. Have a pythonic day! ", 200
+    return 'test',200#render_template('index.html'), 200#"Hello world, this is pyBot by mxquants. Have a pythonic day! ", 200
 
 # %% POST 
 
