@@ -87,7 +87,7 @@ def simulateEntry(n=1,message='#pycode print("hey")'):
 
 def getUserInfo(sender_id='1657838257577411'):
     import requests
-    pat = 'EAAaiAN9H6KEBANNiZCZA1xnwt1wxd9twtZADhHkfvpWHCh8JaVd7CNZB61Yb0jMZA4KAFChAyDNz74ZCpoaWyvNGH2khu6N8LdVEzePFJZC6ueCfvM9Tm9R0d8Ebj4DoZC8CTNbrVISI3DB0MMZBFtNQRlvH9WRcc2xfhS1tCTNJyOQZDZD'
+    pat = 'EAADMZBDhEKOoBAOZCgvKHj6tlf8lQTMNB6MUvPTQQEgluJCXt4VZAH7zTx25NnPD25TOp1ZAG5p0ayksyfjGUMrmeIfVy5tqQq7yMKM27LWx1nfZBVEpn4zQfLXrIzo8FC5RmKywQumyswxp1dDcjqvyFqaNoKFnuq0ucfvGv6QZDZD'
     userprofile_api = 'https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,profile_pic,gender&access_token={PAGE_ACCESS_TOKEN}'
     return eval(requests.get(userprofile_api.format(USER_ID=sender_id,PAGE_ACCESS_TOKEN=pat)).text)
 
@@ -223,12 +223,13 @@ def myNameIs():
 def genericGreetingMesasge(sender):
     import numpy as np
     _user = getUserInfo(sender).get('first_name')
-    user_name =  _user if _user is not None else 'Pythonist'
+    user_name =  _user if _user is not None else 'Wolf of WallStreet'
     
     generic_message = {}
     generic_message[1] = """\
-    Hey Pyhonist! Good to hear about you. 
-    """
+    Hey {}! Good to hear about you. 
+    """.format(user_name)
+    
     generic_message[2] = """\
     Hello {}! :)
     """.format(user_name)
@@ -272,9 +273,9 @@ def IDontUnserstand(sender):
     _text = """\
 I'm sorry {}, still learning to talk here. 
 
-You can use #py before writing some python code and I'll certainly understand. Let's talk with snakes! 
+I didn't understand! 
 
-...or you can ask me some jokes. ;)
+...maybe you can ask me some jokes. ;)
     """
     return _text.format(user_name)
 
