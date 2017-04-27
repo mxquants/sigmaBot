@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-indigo.css">
+
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+    background-color: MediumVioletRed;
+    min-height: 100%;
+    background-image: url("finance.jpg");
+    background-position: center;
+    background-size: cover;
+}
+</style>
+
+<head>
+  <title>The Amazing Sigma</title>
+</head>
+
+<!-- Links (sit on top) -->
+<div class="w3-top">
+  <div class="w3-row w3-padding w3-black">
+    <div class="w3-col s3">
+      <a href="#" class="w3-button w3-block w3-black">HOME</a>
+    </div>
+    <div class="w3-col s3">
+      <a href="#about" class="w3-button w3-block w3-black">ABOUT ME</a>
+    </div>
+    <div class="w3-col s3">
+      <a href="#menu" class="w3-button w3-block w3-black">MENU</a>
+    </div>
+  </div>
+</div>
+
+<body>
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-MediumVioletRed">
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">Sigma</h1>
+    <hr class="w3-border-black" style="margin:auto;width:80%">
+    <p class="w3-large w3-center">Your personal finance assistant.</p>
+  </div>
+</div>
+
+<div class="w3-content w3-container w3-padding-64" id="about">
+  <h3 class="w3-center">Would you like to meet me? Go ahead!</h3>
+  <p class="w3-center"><em>Python at the tip of your fingers</em></p>
+  <p>Sigma is an online chatbot as a personal finance assistant. You can ask her to valuate European, Binary and Barrier options. Furthermore, you can select any set of assets listed on the Mexican Stock Exchange and Sigma will help you to evaluate portfolio performance.
+  </p>
+  <p class="w3-large w3-center w3-padding-16">I can:</p>
+  <p class="w3-wide"><i class="fa fa-camera"></i>Valuate different options</p>
+  <p class="w3-wide"><i class="fa fa-laptop"></i>Evaluate a portfolio performance</p>
+  <p class="w3-wide"><i class="fa fa-photo"></i>Get graphs of simulations</p>
+  <p class="w3-wide"><i class="fa fa-photo"></i>Tell some jokes</p>
+</div>
+
+
+<!-- Menu Container -->
+<div class="w3-container" id="menu">
+  <div class="w3-content" style="max-width:700px">
+ 
+    <h5 class="w3-center w3-padding-48"><span class="w3-tag w3-wide">THE MENU</span></h5>
+  
+    <div class="w3-row w3-center w3-card-2 w3-padding">
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Options');" id="myLink">
+        <div class="w3-col s6 tablink">Options</div>
+      </a>
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Portfolios');">
+        <div class="w3-col s6 tablink">Portfolios</div>
+      </a>
+    </div>
+
+    <div id="Options" class="w3-container menu w3-padding-48 w3-card-2">
+      <h5>European</h5>
+      <p class="w3-text-grey">An option that can only be exercised at its maturity.</p><br>
+    
+      <h5>Binary</h5>
+      <p class="w3-text-grey">The simplest kind of options. If a trader believes the market is rising, he would purchase a call. If the trader believes the market is falling, he would buy a put.</p><br>
+    
+      <h5>Barrier</h5>
+      <p class="w3-text-grey">A type of option whose payoff depends on whether or not the underlying asset has reached or exceeded a predetermined price. A barrier option can be knock-out (deactivation) or knock-in (activation)</p><br>
+
+    <div id="Portfolios" class="w3-container menu w3-padding-48 w3-card-2">
+      <h5>Simulate arbitrary portfolio</h5>
+      <p class="w3-text-grey">Sigma is able to simulate your own portfolio with arbitrary assets listed in the Mexican Stock Exchange.</p><br>
+    
+      <h5>Markowitz criterion</h5>
+      <p class="w3-text-grey"></p><br>
+    
+      <h5>Sharpe criterion</h5>
+      <p class="w3-text-grey">Whiskey and coffee 5.00</p><br>
+    
+      <h5>Simulate an efficient portfolio</h5>
+      <p class="w3-text-grey">Hot tea, except not hot 3.00</p><br>
+    </div>  
+    <img src="investment.jpg" style="width:100%;max-width:1000px;margin-top:32px;">
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
