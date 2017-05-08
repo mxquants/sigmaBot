@@ -7,6 +7,7 @@ Created on Wed Apr 19 15:01:34 2017
 """
 
 from jokes import *
+from markowitz import markowitzSimplePlotWrapper
 
 # %% Sample message
 
@@ -97,7 +98,7 @@ def firstGreetingMessage():
     _text = """\
 Hi {}! 
 
-My name is sigma, your personal financial assistant!
+My name is Sigma, your personal financial assistant!
     """
     return _text.format(user_name)
 
@@ -279,6 +280,31 @@ I didn't understand!
     """
     return _text.format(user_name)
 
+def identifySimpleMarkowitzPlot(text):
+    if ("markowitz" in text.lower()) and ("plot" in text.lower()) and ("with" in text.lower()):
+        return 1
+    return 0 
+
+def makeMarkPlot(text,sender):
+    import image_hosting as ih
+    import os 
+    
+    # get filename
+    filename = markowitzSimplePlotWrapper(text,sender)
+    
+    if filename is None:
+        return "https://photos-5.dropbox.com/t/2/AABa7EHptD0MRtyFW9rmTPbhOw70Y3faibAesnAKYU6zTA/12/666157048/png/32x32/3/1494226800/0/2/No_tick.png/ELfo6LsFGAQgBygH/cbbniVcsZ49xuZIemtI12r8l0S1zr5Qp1QaT8ilNDs8?dl=0&size=2048x1536&size_mode=3"
+    
+    DBM = ih.DropBoxManager()
+    
+    # delete file 
+    DBM.deleteFile(path="/markowitz_plots",filename=filename)
+    DBM.uploadFile(path="/markowitz_plots",filename=filename)
+    temo = DBM.getTemporaryUrl(path="/markowitz_plots",filename=filename)
+    os.remove(filename)
+    return temo['url']
+
+
 # %% Generate Response
 
 
@@ -303,6 +329,9 @@ def generateResponse(text,sender):
     
     if identifySendNudes(text):
         return sendNudes(),'image'
+        
+    if identifySimpleMarkowitzPlot(text):
+        return makeMarkPlot(text,sender),'image'
     
     return IDontUnserstand(sender),'text'
 
