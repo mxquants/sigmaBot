@@ -92,7 +92,7 @@ def getUserInfo(sender_id='1657838257577411'):
     userprofile_api = 'https://graph.facebook.com/v2.6/{USER_ID}?fields=first_name,profile_pic,gender&access_token={PAGE_ACCESS_TOKEN}'
     return eval(requests.get(userprofile_api.format(USER_ID=sender_id,PAGE_ACCESS_TOKEN=pat)).text)
 
-def firstGreetingMessage():
+def firstGreetingMessage(sender):
     _user = getUserInfo(sender).get('first_name')
     user_name =  _user if _user is not None else 'there'
     _text = """\
