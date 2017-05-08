@@ -78,7 +78,7 @@ def generalFilter(data):
     
     # get new ids 
     good_entries = [entry for entry in entries if (str(entry) not in entry_log)]
-    entry_log += [str(entry) for entry in entries]
+    entry_log = list(entry_log)+[str(entry) for entry in entries]
     
     # save 
     np.save('entry_log.npy',entry_log)
