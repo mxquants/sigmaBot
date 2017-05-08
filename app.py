@@ -59,9 +59,18 @@ def webhook():
 def generalFilter(data):
     import numpy as np
     
-    # read logs 
-    entry_log = list(np.load('entry_log.npy'))
     
+    def createEntryLog():
+        entry_log =[]
+        np.save('entry_log.npy',entry_log)
+    
+    # read logs 
+    try:
+        entry_log = list(np.load('entry_log.npy'))
+    except:
+        createEntryLog()
+        entry_log = list(np.load('entry_log.npy'))
+        
     # get entries 
     entries = data.get('entry')
     if entries is None:
