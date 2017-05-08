@@ -15,7 +15,6 @@ from interact import *
 
 app = Flask(__name__)
 
-
 # %% GET and verify() function 
 
 @app.route('/', methods=['GET'])
@@ -27,7 +26,7 @@ def verify():
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
-    return render_template('index.html'), 200#"Hello world, this is pyBot by mxquants. Have a pythonic day! ", 200
+    return render_template('index.html'), 200 
 
 # %% POST 
 
@@ -83,7 +82,7 @@ def generalFilter(data):
     # save 
     np.save('entry_log.npy',entry_log)
     
-    data['entry'] = good_entries
+    data['entry'] = []#good_entries
     return data
 
 # %% sendMessage 
