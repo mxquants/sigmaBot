@@ -38,7 +38,10 @@ def webhook():
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
-
+    
+    data = generalFilter(data)
+    log('Now with filter: \n{}'.format(data))
+    
     if data["object"] == "page":
         
 
@@ -50,6 +53,29 @@ def webhook():
 
     return "ok", 200
 
+# %% 
+
+
+def generalFilter(data):
+    import numpy as np
+    
+    # read logs 
+    entry_log = list(np.load('entry_log.npy'))
+    
+    # get entries 
+    entries = data.get('entry')
+    if entries is None:
+        return data
+    
+    # get new ids 
+    good_entries = [entry for entry in entries if (entry.get('id') not in entry_log)]
+    entry_log += [entry.get('id') for entry in entries if (entry.get('id') is not None)]
+    
+    # save 
+    np.save('entry_log.npy',entry_log)
+    
+    data['entry'] = good_entries
+    return data
 
 # %% sendMessage 
 
