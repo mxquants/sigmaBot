@@ -39,8 +39,8 @@ def webhook():
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
     
-    data = generalFilter(data)
-    log('Now with filter: \n{}'.format(data))
+    #data = generalFilter(data)
+    #log('Now with filter: \n{}'.format(data))
     
     if data["object"] == "page":
         
