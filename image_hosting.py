@@ -7,7 +7,7 @@ import os
 
 def getDropBoxToken(dropbox_user='rhdzmota'):
     if dropbox_user == 'rhdzmota':
-        return 'J8xY1wAWhmAAAAAAAAAACwdIjC1mQU6-Mnd6tq5lCPItxnHF0sIz_XGsqZLifoLF'
+        return 'J8xY1wAWhmAAAAAAAAAAHB0O3d4brbcvyvfVKfGI-jzWjEqQpLtqKGUe0T3pHaXf'
     return None
 
 # %% 
