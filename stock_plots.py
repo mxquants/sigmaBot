@@ -21,16 +21,93 @@ def availableStocks():
     """
     n = len(list(referenceNames()['ticker2yahoo'].keys()))
     m = 20 
-    return 'You can find most stocks in the BMV. Some examples: \n\n'+', '.join(list(pd.DataFrame({'names':list(referenceNames()['ticker2yahoo'].keys())}).iloc[np.random.randint(0,n,10)].values.reshape((10,))))
-# %% 
+    return 'You can find most stocks in the BMV. Some examples: \n\n'+', '.join(list(pd.DataFrame({'names':list(referenceNames()['ticker2yahoo'].keys())}).iloc[np.random.randint(0,n,m)].values.reshape((m,))))
 
 
 # %% 
 
+def stockPlot(tickers,filename):
+    import matplotlib.pyplot as plt 
+    
+    def getYahoo(ticker):
+        if '.MX' in ticker:
+            return ticker
+        return referenceNames()['ticker2yahoo'][ticker]  
+    
+    prices  = pd.read_pickle("db/prices.pickle")[list(map(getYahoo,tickers))]
+    returns = pd.read_pickle("db/returns.pickle")[list(map(getYahoo,tickers))]
+    
+    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(10,7))
+    
+    
+    #fig.suptitle('Historic prices for: {}'.format(tickers), fontsize=14, fontweight='bold')
+    
+    # FIRST PLOT 
+    plt.subplot(2,1,1)
+    for col in prices:
+        plt.plot(prices.index,prices[col].values,label=col)
+        
+    plt.title('Historic prices for: {}'.format(tickers))
+    plt.legend()
+    #plt.xlabel('Date')
+    plt.ylabel('MXN')
+    plt.grid()
+    
+    # SECOND PLOT 
+    plt.subplot(4,1,3)
+    for col in prices:
+        plt.plot(returns.index,returns[col].values,label=col)
+    #plt.plot(prices.index,prices[col].values,label=col)
+    
+    #plt.legend()
+    #plt.title("Log-Returns for selected stocks")
+    plt.xlabel('Date')
+    plt.ylabel('log-returns')
+    plt.grid()
+    
+    # Information 
+    plt.subplot(4,1,4)
+    plt.text(0.5,0.5,'Last price: \n{}'.format(prices.iloc[-1]),verticalalignment='center', horizontalalignment='center')
+    plt.axis('off')
+    
+    #plt.show()
+    
+    
+    plt.savefig(filename,dpi=500) 
+    plt.close()
+    
+    return 1 
+    
+    
+    
 
 # %% 
 
+def stockPlotWrapper(text,sender):
+    """
+    plot STOCK
+    """
+    
+    def getStockNames(text):
+        return [i.upper() for i in text.lower().replace('plot','').replace(',',' ').split(' ') if i != ""]
+        
+    # create filename 
+    filename = 'stockplot_{}.png'.format(str(sender))
+    
+    try:
+        stockPlot(tickers=getStockNames(text),filename=filename)
+    except:
+        filename = None 
+        
+    
+    return filename
 
+
+# %% 
+
+text = "plot ALSEA"
+
+stockPlot(["ALSEA"])
 # %% 
 
 
