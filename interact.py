@@ -7,7 +7,9 @@ Created on Wed Apr 19 15:01:34 2017
 """
 
 from jokes import *
+from stock_plots import *
 from markowitz import markowitzSimplePlotWrapper
+
 
 # %% Sample message
 
@@ -304,7 +306,10 @@ def makeMarkPlot(text,sender):
     os.remove(filename)
     return temo['url']
 
-
+def identifyAvailableRequest(text):
+    if "available" in text.lower():
+        return 1
+    
 # %% Generate Response
 
 
@@ -332,6 +337,9 @@ def generateResponse(text,sender):
         
     if identifySimpleMarkowitzPlot(text):
         return makeMarkPlot(text,sender),'image'
+        
+    if identifyAvailableRequest(text):
+        return availableStocks(),'text'
     
     return IDontUnserstand(sender),'text'
 
