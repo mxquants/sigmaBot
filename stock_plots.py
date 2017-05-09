@@ -29,7 +29,7 @@ def availableStocks():
 
 
 # %% 
-list(pd.DataFrame({'names':list(referenceNames()['ticker2yahoo'].keys())}).iloc[np.random.randint(0,n,10)].values.reshape((10,)))
+
 
 # %% 
 
