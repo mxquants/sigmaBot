@@ -363,7 +363,7 @@ def generateResponse(text,sender):
     if identifyAvailableRequest(text):
         return availableStocks(),'text'
     
-    if identifyStockPlot('text'):
+    if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
         
     return IDontUnserstand(sender),'text'
