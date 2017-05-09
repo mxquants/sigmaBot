@@ -82,7 +82,7 @@ def generalFilter(data):
     # save 
     np.save('entry_log.npy',entry_log)
     
-    data['entry'] = []#good_entries
+    data['entry'] = good_entries
     return data
 
 # %% sendMessage 
