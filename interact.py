@@ -308,7 +308,7 @@ def makeMarkPlot(text,sender):
 
 
 def identifyStockPlot(text):
-    if ('plot' in text) and ('marko' not in text):
+    if ('plot' in text.lower()) and ('marko' not in text.lower()):
         return 1
     
 def makeStockPlot(text,sender):

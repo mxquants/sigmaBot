@@ -30,6 +30,7 @@ def stockPlot(tickers,filename):
     import matplotlib.pyplot as plt 
     
     def getYahoo(ticker):
+        ticker = ticker.upper()
         if '.MX' in ticker:
             return ticker
         return referenceNames()['ticker2yahoo'][ticker]  
@@ -95,11 +96,11 @@ def stockPlotWrapper(text,sender):
     filename = 'stockplot_{}.png'.format(str(sender))
     
     try:
-        stockPlot(tickers=getStockNames(text),filename=filename)
+        status = stockPlot(tickers=getStockNames(text),filename=filename)
     except:
-        filename = None 
+        status = 0
         
-    
+    filename = filename if status else None 
     return filename
 
 
