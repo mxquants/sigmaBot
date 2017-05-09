@@ -105,9 +105,7 @@ def stockPlotWrapper(text,sender):
 
 # %% 
 
-text = "plot ALSEA"
 
-stockPlot(["ALSEA"])
 # %% 
 
 
