@@ -334,6 +334,58 @@ def identifyAvailableRequest(text):
     if "available" in text.lower():
         return 1
     
+def identifyDescriptionRequest(text):
+    if "describe" in text.lower():
+        return 1 
+    
+def satisfyDescription(text):
+    from data_operations import referenceNames
+    import pandas as pd
+    import numpy  as np
+    ticker = [i.upper() for i in text.lower().replace("describe", "").replace(","," ").split(" ") if i != ""]
+    
+    if len(ticker) != 1:
+        return "Hey there, you enter an invalid command. Try just: Describe <TICKER>\nNote, replace <TICKER> with the stockname (e.g. ALSEA, SANMEX)"
+    ticker = ticker[0]
+    
+    def getYahoo(ticker):
+        ticker = ticker.upper()
+        if '.MX' in ticker:
+            return ticker
+        return referenceNames()['ticker2yahoo'][ticker] 
+    
+    desc = referenceNames()["name2desc"][ticker]
+    yho  = getYahoo(ticker)
+    
+    prices =  pd.read_pickle("db/prices.pickle")[[yho]]
+    returns = pd.read_pickle("db/returns.pickle")[[yho]]
+    
+    price_description = """\
+    
+    \n
+    Using 2y for historical data. 
+    
+    Price Desc.
+    
+>> Actual price: {actual} MXN     
+>> Min. price recorded: {_min} MXN 
+>> Max. price recordad: {_max} MXN 
+>> Last 10 prices average: {avrg} MXN
+
+""".format(actual=np.asscalar(prices.values[-1]),_min=np.min(prices.values),_max=np.max(prices.values),avrg=np.mean(prices.values[-10:]))
+    
+    return_description = """\
+    
+    Returns Desc. 
+    
+>> Daily mean return: {}
+>> Daily volatility: {}
+    
+>> Annual mean return: {}
+>> Annual volatility: {}
+""".format(np.mean(returns.values),np.std(returns.values),360*np.mean(returns.values),np.sqrt(360)*np.std(returns.values))
+
+    return desc+price_description+return_description
 # %% Generate Response
 
 def generateResponse(text,sender):
@@ -365,6 +417,9 @@ def generateResponse(text,sender):
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
+        
+    if identifyDescriptionRequest(text):
+        return satisfyDescription(text), 'text'
         
     return IDontUnserstand(sender),'text'
 
