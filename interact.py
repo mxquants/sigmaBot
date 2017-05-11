@@ -354,10 +354,9 @@ def satisfyDescription(text):
             return ticker
         return referenceNames()['ticker2yahoo'][ticker] 
     
-    desc = referenceNames()["name2desc"][ticker]
-    yho  = getYahoo(ticker)
-    
     try:
+        desc = referenceNames()["name2desc"][ticker]
+        yho  = getYahoo(ticker)
         prices =  pd.read_pickle("db/prices.pickle")[[yho]]
         returns = pd.read_pickle("db/returns.pickle")[[yho]]
     except:
