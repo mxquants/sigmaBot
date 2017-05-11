@@ -386,7 +386,7 @@ def satisfyDescription(text):
 >> Annual volatility: {}
 """.format(np.mean(returns.values),np.std(returns.values),360*np.mean(returns.values),np.sqrt(360)*np.std(returns.values))
 
-    return desc+price_description+return_description
+    return "According to the BMV: \n\n"+desc+price_description+return_description
 # %% Generate Response
 
 def generateResponse(text,sender):
