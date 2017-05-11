@@ -357,9 +357,11 @@ def satisfyDescription(text):
     desc = referenceNames()["name2desc"][ticker]
     yho  = getYahoo(ticker)
     
-    prices =  pd.read_pickle("db/prices.pickle")[[yho]]
-    returns = pd.read_pickle("db/returns.pickle")[[yho]]
-    
+    try:
+        prices =  pd.read_pickle("db/prices.pickle")[[yho]]
+        returns = pd.read_pickle("db/returns.pickle")[[yho]]
+    except:
+        return "Warning: There is an error regarding the stock-name (ticker) provided."
     price_description = """\
     
     \n
