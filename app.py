@@ -52,6 +52,23 @@ def webhook():
 
     return "ok", 200
 
+
+
+@app.route('/images', methods=['GET'])
+def getUrl():
+    import image_hosting as ih  
+    
+    # get filename 
+    filename = request.args.get("filename")
+    
+    # get temporal url 
+    try:
+        DBM = ih.DropBoxManager()
+        tempo = DBM.getTemporaryUrl(path="/web-images",filename=filename)
+        return str(tempo['url']),200
+    except:
+        return "Not found",200
+    
 # %% 
 
 
