@@ -237,7 +237,7 @@ def getMarkowitzPortfolioFromFrontier(text):
         
     try:
         Mark = Markowitz()
-        res = Mark.getEfficientPortfolio(ticker=getStockList(text),percentile=getPercentile(text))
+        res = Mark.getEfficientPortfolio(tickers=getStockList(text),percentile=getPercentile(text))
     except: 
         res = "Something went wrong and I couldn't handle your request!"
         
