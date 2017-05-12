@@ -138,7 +138,7 @@ class Markowitz(object):
         
     def getEfficientPortfolio(self,tickers='all',percentile=100,_as="text"):
         
-        if self.port_opt is None and type(tickers) != type([]): 
+        if self.port_opt is None or type(tickers) != "all": 
             self.getItDone(tickers)
             
         lenght = len(self.port_opt)
