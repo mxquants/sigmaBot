@@ -217,7 +217,7 @@ def markowitzSimplePlotWrapper(text,sender):
 
 # %%
 
-def getMarkowitzPortfolioFromFrontier(text,sender):
+def getMarkowitzPortfolioFromFrontier(text):
     """
     Get percentile 10 portfolio from efficient fronteir using all data. 
     """
