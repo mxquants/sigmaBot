@@ -363,8 +363,8 @@ def satisfyDescription(text):
         return "Warning: There is an error regarding the stock-name (ticker) provided."
     price_description = """\
     
-    \n
-    Using 2y for historical data. 
+\n
+Using 2y of historical data. 
     
     Price Desc.
     
@@ -387,6 +387,13 @@ def satisfyDescription(text):
 """.format(np.mean(returns.values),np.std(returns.values),360*np.mean(returns.values),np.sqrt(360)*np.std(returns.values))
 
     return "According to the BMV: \n\n"+desc+price_description+return_description
+
+
+def identifyEfficientPort(text):
+    # Get percentile 10 portfolio from efficient fronteir using all data.
+    if ("percentile" in text.lower()) and ("port" in text.lower()) and ("efficient" in text.lower()) and ("using" in text.lower()):
+        return 1
+    return 0
 # %% Generate Response
 
 def generateResponse(text,sender):
@@ -421,6 +428,9 @@ def generateResponse(text,sender):
         
     if identifyDescriptionRequest(text):
         return satisfyDescription(text), 'text'
+        
+    if identifyEfficientPort(text):
+        return getMarkowitzPortfolioFromFrontier(text), 'text'
         
     return IDontUnserstand(sender),'text'
 

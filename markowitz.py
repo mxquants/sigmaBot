@@ -136,6 +136,28 @@ class Markowitz(object):
         self.simulateRandPort()
         self.generateEfficientFrontier()
         
+    def getEfficientPortfolio(self,tickers='all',percentile=100,_as="text"):
+        
+        if self.port_opt is None and type(tickers) != type([]): 
+            self.getItDone(tickers)
+            
+        lenght = len(self.port_opt)
+        select = int(np.percentile(np.arange(lenght),percentile))
+        
+        # portfolio charateristics
+        desc = self.port_opt.iloc[[select]]
+        weights = pd.DataFrame(100*self.w_opt_list[select],columns=self.returns.columns,index=[select])
+        
+        if _as == "text":
+            title  = "{} percentile of the Markowitz efficient frontier (orderded from more risky to least risky).\n\n"
+            intro  = "From the stocks you provided, this are the most relevant ones with their correpondent weight: \n\n"
+            middle = "\n\nDaily  returns and volatility:\n"
+            middle2= "\n\nAnnual return and colatility:\n"
+            return title.format(percentile)+intro+str(weights)+middle+str(desc)+middle2+str(360*desc)
+        return None
+        
+        
+        
     def plot(self,tickers='all',filename=''):
         import matplotlib.pyplot as plt 
         
@@ -195,8 +217,31 @@ def markowitzSimplePlotWrapper(text,sender):
 
 # %%
 
-
-#Mark.port_opt.iloc[-1]
+def getMarkowitzPortfolioFromFrontier(text,sender):
+    """
+    Get percentile 10 portfolio from efficient fronteir using all data. 
+    """
+    
+    def getYahoo(ticker):
+        if '.MX' in ticker:
+            return ticker
+        return referenceNames()['ticker2yahoo'][ticker]
+    
+    def getStockList(text):
+        if "all data" in text:
+            return "all"
+        return [getYahoo(i.upper()) for i in text.lower().split('with')[-1].replace(',',' ').split(' ') if i != ""]
+   
+    def getPercentile(text):
+        return int(text.split("percentile")[-1].split("port")[0].replace(" ",""))
+        
+    try:
+        Mark = Markowitz()
+        res = Mark.getEfficientPortfolio(ticker=getStockList(text),percentile=getPercentile(text))
+    except: 
+        res = "Something went wrong and I couldn't handle your request!"
+        
+    return res 
 
 # %% 
 
