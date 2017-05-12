@@ -8,7 +8,7 @@ Created on Wed Apr 19 15:01:34 2017
 
 from jokes import *
 from stock_plots import *
-from markowitz import markowitzSimplePlotWrapper, getMarkowitzPortfolioFromFrontier
+from markowitz import *
 
 
 # %% Sample message
