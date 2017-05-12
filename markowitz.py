@@ -230,7 +230,7 @@ def getMarkowitzPortfolioFromFrontier(text,sender):
     def getStockList(text):
         if "all data" in text:
             return "all"
-        return [getYahoo(i.upper()) for i in text.lower().split('with')[-1].replace(',',' ').split(' ') if i != ""]
+        return [getYahoo(i.upper()) for i in text.lower().split('using')[-1].replace(',',' ').split(' ') if i != ""]
    
     def getPercentile(text):
         return int(text.split("percentile")[-1].split("port")[0].replace(" ",""))
