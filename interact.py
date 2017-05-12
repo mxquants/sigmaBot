@@ -394,6 +394,15 @@ def identifyEfficientPort(text):
     if ("percentile" in text.lower()) and ("port" in text.lower()) and ("efficient" in text.lower()) and ("using" in text.lower()):
         return 1
     return 0
+
+
+def identifySingleEfficient(text):
+    # Get markowitz efficient portfolio using all data
+    if ("markowitz" in text.lower()) and ("port" in text.lower()) and ("efficient" in text.lower()) and ("using" in text.lower()):
+        return 1
+    return 0
+        
+        
 # %% Generate Response
 
 def generateResponse(text,sender):
@@ -431,6 +440,9 @@ def generateResponse(text,sender):
         
     if identifyEfficientPort(text):
         return getMarkowitzPortfolioFromFrontier(text), 'text'
+        
+    if identifySingleEfficient(text):
+        return getEfficientPort(text), 'text'
         
     return IDontUnserstand(sender),'text'
 

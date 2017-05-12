@@ -243,6 +243,15 @@ def getMarkowitzPortfolioFromFrontier(text):
         
     return res 
 
+def getEfficientPort(text):
+    """
+    Get markowitz efficient portfolio using all data .
+    """
+    
+    def changeString(text):
+        return "percentile 100 "+"port"+text.split("port")[-1]
+    
+    return getMarkowitzPortfolioFromFrontier(changeString(text))
 # %% 
 
 # %% 
