@@ -131,6 +131,19 @@ def saveAvailableStocks():
     np.save("db/available_data",available_data)
     return 1 
 
+def generateInverseDict():
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    yahoo2ticker = {}
+    for ticker in ticker2yahoo:
+        yho = ticker2yahoo[ticker]
+        yahoo2ticker[yho] = ticker
+    np.save("yahoo2ticker.npy",yahoo2ticker)
+    return 1
+
+def trulyAvailableStocks():
+    yahoo2ticker = np.load("yahoo2ticker.npy").item()
+    return list(map(lambda x: yahoo2ticker[x], list(pd.read_pickle("db/returns.pickle").columns)))
+
 # %% 
 
 

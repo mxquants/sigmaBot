@@ -11,7 +11,7 @@ Created on Mon May  8 19:06:44 2017
 import numpy as  np
 import pandas as pd
 
-from data_operations import referenceNames
+from data_operations import referenceNames,trulyAvailableStocks
 
 # %% 
 
@@ -19,7 +19,7 @@ def availableStocks():
     """
     text = "Available Stocks"
     """
-    n = len(list(referenceNames()['ticker2yahoo'].keys()))
+    n = len(trulyAvailableStocks())#len(list(referenceNames()['ticker2yahoo'].keys()))
     m = 20 
     return 'You can find most stocks in the BMV. Some examples: \n\n'+', '.join(list(pd.DataFrame({'names':list(referenceNames()['ticker2yahoo'].keys())}).iloc[np.random.randint(0,n,m)].values.reshape((m,))))
 

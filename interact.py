@@ -9,7 +9,7 @@ Created on Wed Apr 19 15:01:34 2017
 from jokes import *
 from stock_plots import *
 from markowitz import *
-
+from data_operations import trulyAvailableStocks
 
 # %% Sample message
 
@@ -333,10 +333,12 @@ def makeStockPlot(text,sender):
 def identifyAvailableRequest(text):
     if "available" in text.lower():
         return 1
+    return 0
     
 def identifyDescriptionRequest(text):
     if "describe" in text.lower():
         return 1 
+    return 0
     
 def satisfyDescription(text):
     from data_operations import referenceNames
@@ -430,7 +432,7 @@ def generateResponse(text,sender):
         return makeMarkPlot(text,sender),'image'
         
     if identifyAvailableRequest(text):
-        return availableStocks(),'text'
+        return trulyAvailableStocks()(),'text'
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
