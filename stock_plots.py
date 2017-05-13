@@ -74,7 +74,7 @@ def stockPlot(tickers,filename):
     #plt.show()
     
     
-    plt.savefig(filename,dpi=100) 
+    plt.savefig(filename,dpi=50) 
     plt.close()
     
     return 1 
