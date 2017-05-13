@@ -307,8 +307,8 @@ def makeMarkPlot(text,sender):
     os.remove(filename)
     return temo['url']
 
-def identifyCovarPlor(text):
-    if ('plot' in text.lower()) and ('covar' in text.lower()) and ('of' not in text.lower()):
+def identifyCovarPlot(text):
+    if ('plot' in text.lower()) and ('covar' in text.lower()) and ('of' in text.lower()):
         return 1
     return 0
 
@@ -486,7 +486,7 @@ def generateResponse(text,sender):
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
         
-    if identifyCovarPlor(text):
+    if identifyCovarPlot(text):
         return makeCovarPlotReal(text,sender),'image'
         
     if identifyMonteCarloStockPlot(text):
