@@ -136,13 +136,13 @@ class Markowitz(object):
         self.simulateRandPort()
         self.generateEfficientFrontier()
         
-    def getEfficientPortfolio(self,tickers='all',percentile=100,_as="text"):
+    def getEfficientPortfolio(self,tickers='all',percentile=0,_as="text"):
         
         if self.port_opt is None or type(tickers) != "all": 
             self.getItDone(tickers)
             
         lenght = len(self.port_opt)
-        select = int(np.percentile(np.arange(lenght),percentile))
+        select = int(np.percentile(np.arange(lenght),100-percentile))
         
         # portfolio charateristics
         desc = self.port_opt.iloc[[select]]
@@ -249,7 +249,7 @@ def getEfficientPort(text):
     """
     
     def changeString(text):
-        return "percentile 100 "+"port"+text.split("port")[-1]
+        return "percentile 1 "+"port"+text.split("port")[-1]
     
     return getMarkowitzPortfolioFromFrontier(changeString(text))
 # %% 
