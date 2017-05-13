@@ -432,7 +432,7 @@ def generateResponse(text,sender):
         return makeMarkPlot(text,sender),'image'
         
     if identifyAvailableRequest(text):
-        return trulyAvailableStocks()(),'text'
+        return trulyAvailableStocks(),'text'
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
