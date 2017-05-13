@@ -308,7 +308,7 @@ def makeMarkPlot(text,sender):
     return temo['url']
 
 def identifyCovarPlor(text):
-    if ('plot' in text.lower()) and ('covar' not in text.lower()) and ('of' not in text.lower()):
+    if ('plot' in text.lower()) and ('covar' in text.lower()) and ('of' not in text.lower()):
         return 1
     return 0
 
@@ -332,7 +332,7 @@ def makeCovarPlotReal(text,sender):
     return temo['url']
 
 def identifyStockPlot(text):
-    if ('plot' in text.lower()) and ('marko' not in text.lower()):
+    if ('plot' in text.lower()) and ('marko' not in text.lower()) and ('covar' not in text.lower()):
         return 1
     return 0
 
