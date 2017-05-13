@@ -133,7 +133,7 @@ def sendMessage(response_info):
     params  = {"access_token": os.environ["PAGE_ACCESS_TOKEN"]}
     headers = {"Content-Type": "application/json"}
     data    = generatePostJsonData(response_info)
-    print(data)
+    log(data)
     
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", 
                       params=params, 
