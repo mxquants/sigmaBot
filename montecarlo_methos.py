@@ -17,10 +17,10 @@ import data_operations as do
 # %% Reference variables 
 
 # max number of trajectories 
-horizontal_limit = 50000
+horizontal_limit = 1000
 
 # max number of years 
-years = 5
+years = 1
 
 # %% KDE density estimator
 
@@ -37,14 +37,39 @@ def getTheKDE(datapoints):
     from sklearn.neighbors import KernelDensity
     
     # create and train the Kernel Density 
-    kde = KernelDensity(kernel='gaussian',bandwidth=0.3).fit(
+    kde = KernelDensity(kernel='gaussian',bandwidth=0.000001).fit(
         datapoints.reshape(-1, 1))
     
     return kde
 
+def getKDE(returns):
+    random_variable = returns.plot(kind='kde')
+    x_val, y_val    = random_variable.get_children()[0]._x, random_variable.get_children()[0]._y
+    random_variable = pd.DataFrame({'x':x_val,'density':y_val})
+        
+    # Calculate the cummulative distribution 
+    acum = 0
+    acum_vect = []
+    for d in random_variable.density:
+        acum += d
+        acum_vect.append(acum)
+    
+    # Save into dataframe 
+    random_variable['cumulative'] = np.array(acum_vect)/acum
+                   
+    plt.close()
+    return random_variable
+        
+def getRandomValue(reference):
+    unif = np.random.uniform()
+    index = sum(reference.cumulative < unif)
+    return reference.x.iloc[index]
+
+def getRandomVect(n,reference):
+    return np.array([getRandomValue(reference) for i in range(n)])
 
 # %% Monte-Carlo Simulations 
-
+# pd.DataFrame({"k":kde.sample(1000).reshape(1000,)}).plot() 
 def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
     
     # import translator
@@ -56,11 +81,13 @@ def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
     
     S0 = (pd.read_pickle("db/prices.pickle")[ticker2yahoo[stock]].values[-1] if S0 is None else S0)
     
-    def generateRandom(n):
-        return list(kde.sample(n).reshape(n,))
+    def generateRandom(n,x):
+        return list(kde.sample(n,random_state=x).reshape(n,))
     
     # generate random numbers 
-    rnd = list(map(lambda x: generateRandom(n),range(m)))
+    rnd = list(map(lambda x: generateRandom(n,x=x),range(m)))
+    #reference = getKDE(returns)
+    #rnd = list(map(lambda x: getRandomVect(n,reference),range(m)))
     
     # logarithmic increment and path 
     log_increment = [np.concatenate([np.array([np.log(S0)]),i]) for i in rnd]
