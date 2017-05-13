@@ -73,7 +73,7 @@ def getRandomVect(n,reference):
 def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
     
     # import translator
-    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    #ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
     # get the stock historic return 
     returns = pd.read_pickle("db/returns.pickle")[ticker2yahoo[stock]]
@@ -98,7 +98,7 @@ def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
 def mTrajectoriesNormal(stock,S0=None,mu=None,sigma=None,n=years*360,m=horizontal_limit):
     
     # import translator
-    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    #ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
     # get the stock historic return 
     returns = pd.read_pickle("db/returns.pickle")[ticker2yahoo[stock]]
@@ -129,7 +129,12 @@ def getSimulation(ticker,kind='kde',n=360,m=100):
         df = pd.read_pickle(filename)[list(random_choice)].iloc[:n]
         df.columns = np.arange(0,m)
         return df 
-    f = mTrajectoriesNormal if kind == "normal" else mTrajectoriesKde
+    
+    if kind=="normal":
+        f = mTrajectoriesNormal
+    else:
+        f = mTrajectoriesKde
+        
     return f(stock=ticker,n=n,m=m)
 
 # %% Create plot
