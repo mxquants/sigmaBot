@@ -10,6 +10,7 @@ from jokes import *
 from stock_plots import *
 from markowitz import *
 from data_operations import trulyAvailableStocks
+from montecarlo_methos import *
 
 # %% Sample message
 
