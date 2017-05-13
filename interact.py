@@ -482,12 +482,12 @@ def generateResponse(text,sender):
         
     if identifyAvailableRequest(text):
         return availableStocks(),'text'
-        
-    if identifyCovarPlor(text):
-        return makeCovarPlotReal(text,sender),'image'
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
+        
+    if identifyCovarPlor(text):
+        return makeCovarPlotReal(text,sender),'image'
         
     if identifyMonteCarloStockPlot(text):
         return makeStockMCPlot(text,sender)
