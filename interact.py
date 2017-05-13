@@ -341,9 +341,9 @@ def makeStockMCPlot(text,sender):
     import os 
     
     # get filename
-    filename = montecarloStockPlot(text,sender)
+    filename,warning = montecarloStockPlot(text,sender)
     if filename is None:
-        return "https://photos-5.dropbox.com/t/2/AABa7EHptD0MRtyFW9rmTPbhOw70Y3faibAesnAKYU6zTA/12/666157048/png/32x32/3/1494226800/0/2/No_tick.png/ELfo6LsFGAQgBygH/cbbniVcsZ49xuZIemtI12r8l0S1zr5Qp1QaT8ilNDs8?dl=0&size=2048x1536&size_mode=3"
+        return warning, "text"
 
     DBM = ih.DropBoxManager()
     
@@ -352,7 +352,7 @@ def makeStockMCPlot(text,sender):
     DBM.uploadFile(path="/stock_mc_plots",filename=filename)
     temo = DBM.getTemporaryUrl(path="/stock_mc_plots",filename=filename)
     os.remove(filename)
-    return temo['url']
+    return temo['url'], "image"
 
 def identifyAvailableRequest(text):
     if "available" in text.lower():
@@ -394,10 +394,10 @@ Using 2y of historical data.
     
     Price Desc.
     
->> Actual price: {actual} MXN     
->> Min. price recorded: {_min} MXN 
->> Max. price recordad: {_max} MXN 
->> Last 10 prices average: {avrg} MXN
+>> Actual price: $ {actual:0.4f} MXN     
+>> Min. price recorded: $ {_min:0.4f} MXN 
+>> Max. price recordad: $ {_max:0.4f} MXN 
+>> Last 10 prices average: $ {avrg:0.4f} MXN
 
 """.format(actual=np.asscalar(prices.values[-1]),_min=np.min(prices.values),_max=np.max(prices.values),avrg=np.mean(prices.values[-10:]))
     
@@ -405,12 +405,12 @@ Using 2y of historical data.
     
     Returns Desc. 
     
->> Daily mean return: {}
->> Daily volatility: {}
-    
->> Annual mean return: {}
->> Annual volatility: {}
-""".format(np.mean(returns.values),np.std(returns.values),360*np.mean(returns.values),np.sqrt(360)*np.std(returns.values))
+>> Daily mean return: {:0.2f} %
+>> Daily volatility: {:0.2f} % 
+>> Annual mean return: {:0.2f} % 
+>> Annual volatility: {:0.2f} % 
+""".format(100*np.mean(returns.values),np.std(returns.values),
+           100*360*np.mean(returns.values),100*np.sqrt(360)*np.std(returns.values))
 
     return "According to the BMV: \n\n"+desc+price_description+return_description
 
@@ -456,13 +456,13 @@ def generateResponse(text,sender):
         return makeMarkPlot(text,sender),'image'
         
     if identifyAvailableRequest(text):
-        return trulyAvailableStocks(),'text'
+        return availableStocks(),'text'
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
         
     if identifyMonteCarloStockPlot(text):
-        return makeStockMCPlot(text,sender), "image"
+        return makeStockMCPlot(text,sender)
         
     if identifyDescriptionRequest(text):
         return satisfyDescription(text), 'text'
