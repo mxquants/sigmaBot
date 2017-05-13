@@ -135,7 +135,7 @@ def getSimulation(ticker,kind='kde',n=360,m=100):
 # %% Create plot
 
 def simulateStock(ticker,kind,n=50,m=15,filename="montecarlo_stock_test.png"):
-    
+    import matplotlib.pyplot as plt 
     # translate 2 yho
     ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
