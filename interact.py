@@ -353,6 +353,7 @@ def makeStockPlot(text,sender):
     DBM.uploadFile(path="/stock_plots",filename=filename)
     temo = DBM.getTemporaryUrl(path="/stock_plots",filename=filename)
     os.remove(filename)
+    print(temo['url'])
     return temo['url']
 
 def identifyMonteCarloStockPlot(text):
