@@ -145,16 +145,14 @@ def covarPlot(tickers,filename):
 
 def covarPlotWrapper(text,sender):
     """
-    plot STOCK
+    plot covar STOCK
     """
     
     # translator
     ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
     def getStocks(text):
-        return [ticker2yahoo[i.upper()] for i in text.
-                             lower().split("of ")[-1].replace(","," ").
-                             split(" ") if i != ""]
+        return [ticker2yahoo[i.upper()] for i in text.lower().split("of ")[-1].replace(","," ").split(" ") if i != ""]
         
     # create filename 
     filename = 'covarplot_{}.png'.format(str(sender))
