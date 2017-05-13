@@ -197,7 +197,6 @@ deviation of $ {:0.4f} MXN.
     plt.close()
     
     return 1
-# %% 
 
 def montecarloStockPlot(text,sender):
     """montecarlo stock plot
