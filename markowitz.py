@@ -91,7 +91,7 @@ class Markowitz(object):
         return np.asmatrix([i for i in sol['x']])
         
         
-    def iterativeSelectionProcess(self,returns,w_opt_list=None,tolerance=0.05,alpha2range=np.arange(1,250)):
+    def iterativeSelectionProcess(self,returns,w_opt_list=None,tolerance=0.05,alpha2range=np.arange(1,500)):
     
         if w_opt_list is None: 
             w_opt_list =  [self.getSolutionMkw(returns,alpha_2=a2) for a2 in alpha2range]
@@ -120,7 +120,7 @@ class Markowitz(object):
         self.w_opt_list = w_opt_list
     
     def simulateRandPort(self):
-        self.portfolios = generateMultiplePortfolios(2000,self.returns)
+        self.portfolios = generateMultiplePortfolios(5000,self.returns)
         
     def generateEfficientFrontier(self):
         port_opt = []
