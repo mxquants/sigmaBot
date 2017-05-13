@@ -211,7 +211,7 @@ def montecarloStockPlot(text,sender):
     kind = "kde" if detectKde(text) else "normal"
     
     def getStockName(text):
-        return text.split(" ")[1]
+        return text.split(" ")[1].upper()
     
     # create filename 
     filename = 'montecarloStock_{}.png'.format(str(sender))
