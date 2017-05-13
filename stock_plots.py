@@ -105,11 +105,67 @@ def stockPlotWrapper(text,sender):
 
 
 # %% 
+"""
+def covariancePlot():
+    stocks = ['GENTERA.MX', 'GFINBURO.MX', 'GFINTERO.MX']
+    
+    # read returns 
+    returns = pd.read_pickle("db/returns.pickle")[stocks]
 
-
+    # calculate covariance matrix
+    covar = returns.cov()
+    
+    plt.imshow(covar,cmap='hoy')
+"""
 # %% 
 
+def covarPlot(tickers,filename):
+    """
+    Plot covariance of ALSEA GMEXICO 
+    """
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    
 
+    
+    # read returns and calulate covar
+    returns = pd.read_pickle("db/returns.pickle")[tickers]
+    covar   = returns.cov()
+    
+    # create heatmap 
+    sns.heatmap(covar)
+    plt.title("Covariance Heat Plot")
+    
+    # save figure
+    plt.savefig(filename,dpi=500) 
+    plt.close()
+    
+    return 1
+    
+
+def covarPlotWrapper(text,sender):
+    """
+    plot STOCK
+    """
+    
+    # translator
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    
+    def getStocks(text):
+        return [ticker2yahoo[i.upper()] for i in text.
+                             lower().split("of ")[-1].replace(","," ").
+                             split(" ") if i != ""]
+        
+    # create filename 
+    filename = 'covarplot_{}.png'.format(str(sender))
+    
+    try:
+        status = covarPlot(tickers=getStocks(text),filename=filename)
+    except:
+        status = 0
+        
+    filename = filename if status else None 
+    return filename
 # %% 
 
 
