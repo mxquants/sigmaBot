@@ -150,10 +150,10 @@ class Markowitz(object):
         
         if _as == "text":
             title  = "{} percentile of the Markowitz efficient frontier (orderded from more risky to least risky).\n\n"
-            intro  = "From the stocks you provided, this are the most relevant ones with their correpondent weight: \n\n"
+            intro  = "From the stocks you provided, this are the most relevant ones with their correspondent weight: \n\n"
             middle = "\n\nDaily  returns and volatility:\n"
             middle2= "\n\nAnnual return and colatility:\n"
-            return title.format(percentile)+intro+str(weights)+middle+str(desc)+middle2+str(360*desc)
+            return title.format(percentile)+intro+str(weights)+middle+str(desc)+middle2+str(np.array([360,np.sqrt(360)])*desc)
         return None
         
         
