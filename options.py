@@ -336,7 +336,10 @@ def getMonteCarloValuation(_type, _kind,_simul):
 
 # %% Option wrapper
 
-def optionWrapper(text):
+def optionWrapper(t_xt):
+    global text
+    text = t_xt 
+    
     _type = None 
     def detectBinaryType(text):
         return text.lower().split("(")[-1].split(")")[0].replace(" ","")
