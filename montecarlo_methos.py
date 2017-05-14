@@ -424,13 +424,13 @@ def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_li
     kde_simulations = simulateKdePort(tickers,n_stocks,T,m)
     
     # Create plot     
-    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(10,10))
+    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(9,9))
     
     # Normal plot 
     plt.subplot(3,1,1)
     
     
-        # get values 
+    # get values 
     port_value = np.array(m*[0])
     port_vect = []
     c = 1
