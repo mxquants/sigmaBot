@@ -424,10 +424,10 @@ def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_li
     kde_simulations = simulateKdePort(tickers,n_stocks,T,m)
     
     # Create plot     
-    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(10,7))
+    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(10,10))
     
     # Normal plot 
-    plt.subplot(2,1,1)
+    plt.subplot(3,1,1)
     
     
         # get values 
@@ -442,7 +442,7 @@ def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_li
         port_value = port_value + j*i.iloc[-1,:].values
         c += 1
     
-    #temp = port_vect.iloc[-1] + remanent
+    temp = port_vect.iloc[-1] + remanent
     #result_string = 'Information at maturity.\n\n\t> Min value: {}\n\t> Max value: {}\n\t> Mean: {}\n\t> Std: {}'.format(
     #        temp.min(),temp.max(),temp.mean(),temp.std())
     
@@ -456,7 +456,7 @@ def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_li
     
     
     # KDE plot
-    plt.subplot(2,1,2)
+    plt.subplot(3,1,2)
     
     for tr in kde_simulations:
         one = kde_simulations[tr] + remanent
@@ -467,6 +467,22 @@ def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_li
     plt.ylabel("Value (in MXN)")
     plt.grid(True)
     
+    
+    plt.subplot(3,1,3)
+    
+    prop_normal = 100*np.sum(temp > capital) / m
+    prop_kde    = 100*np.sum(kde_simulations.iloc[-1] > capital) / m
+    
+    res_str = """\
+Probability of generating returns (final value > initial capital):
+    
+    Using Normal Assumptions: {:0.4f} %
+    Using Kernel Density Estimatior: {:0.4f} %
+""".format(100*prop_normal,100*prop_kde)
+             
+    plt.text(0.5,0.5,res_str,verticalalignment='center', horizontalalignment='center')
+    plt.axis('off')             
+                            
     plt.savefig(filename,dpi=500) 
     plt.close()
     
