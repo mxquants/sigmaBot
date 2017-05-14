@@ -160,28 +160,36 @@ class Markowitz(object):
         
     def plot(self,tickers='all',filename=''):
         import matplotlib.pyplot as plt 
+        #from sharpe import findMaxSharpe,getPortfolioParameters
+        
+        
+        #yho2tk = np.load("yahoo2ticker.npy").item()
+        #t_kers = [yho2tk[i] for i in (list(pd.read_pickle("db/returns.pickle").columns) if tickers=='all' else tickers)]
+        #max_sharpe = findMaxSharpe(t_kers,False)
+        #sh_m,sh_s  = getPortfolioParameters(t_kers,max_sharpe.x) 
         
         if self.port_opt is None: 
             self.getItDone(tickers)
         
-        fig = plt.figure(figsize=(8,6))
+        fig = plt.figure(figsize=(8,5))
         ax = fig.add_subplot(111)
         
         fig.suptitle('Markowitz Portfolio Theory - Combinations and Efficient Frontier', fontsize=14, fontweight='bold')
         #self.portfolios.plot(kind='scatter',x='std',y='rp',grid=True,figsize=(10,7))
-        ax.scatter(self.portfolios['std'],self.portfolios['rp'],s=7) # ,'b.',alpha=0.6
+        ax.scatter(self.portfolios['std'],self.portfolios['rp'],s=3) # ,'b.',alpha=0.6
         ax.plot(self.port_opt['volatility'],self.port_opt['returns'],'r-')
-        ax.scatter(self.port_opt['volatility'].iloc[0], self.port_opt['returns'].iloc[0], c='g',s=100)
-        ax.scatter(self.port_opt['volatility'].iloc[-1],self.port_opt['returns'].iloc[-1],c='y',s=100)
+        ax.scatter(self.port_opt['volatility'].iloc[0], self.port_opt['returns'].iloc[0], c='g',s=80)
+        ax.scatter(self.port_opt['volatility'].iloc[-1],self.port_opt['returns'].iloc[-1],c='y',s=80)
+        #ax.plot(100*sh_s/np.sqrt(360),100*sh_m/360,"xr")
         
         plt.title('Relevant stocks used: {}'.format(str(self.selection)))
         plt.xlabel('Daily Volatility (%)')
         plt.ylabel('Daily log-returns (%)')
         plt.grid()
         
-        plt.savefig(filename,dpi=300) 
-        plt.close()
-        #plt.show()
+        #plt.savefig(filename,dpi=300) 
+        #plt.close()
+        plt.show()
         
 # %% Test
 def markowitzSimplePlotWrapper(text,sender):

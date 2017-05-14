@@ -45,7 +45,7 @@ def objective(x,tickers):
 def cut2decimals(z):
     return int(100*z)/100
 
-def findMaxSharpe(tickers):
+def findMaxSharpe(tickers,_string=True):
     
     n = len(tickers)
     
@@ -58,6 +58,10 @@ def findMaxSharpe(tickers):
     bounds = tuple( (0,1) for i in range(n))
     
     opts = sco.minimize(objective, n*[1./n,], method='SLSQP', bounds=bounds, constraints=constraints,args=args)
+    
+    
+    if not _string:
+        return opts
     
     result_string = """\
 
