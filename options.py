@@ -9,8 +9,8 @@ Created on Sun May 14 01:15:57 2017
 
 
 
-import os
-os.chdir('/media/rhdzmota/Data/Files/github_mxquants/sigmaBot')
+#import os
+#os.chdir('/media/rhdzmota/Data/Files/github_mxquants/sigmaBot')
 
 import numpy as np
 import pandas as pd
@@ -24,6 +24,7 @@ from scipy.stats import norm
 
 # %% 
 
+"""
 text = "Calculate barrier option (type) price for ALSEA stock with maturity in 1 y, strike of 50, barrier of 60, volatility of 0.2"
 
 text_european = "Calculate european option price for ALSEA stock with maturity in 1 y, strike of 50"
@@ -32,6 +33,7 @@ text_binary   = "calculate binary option (asset_or_nothing) price for ALSEA stoc
 
 text_generic1 = "Hola quiero calcular opciones option que tal. Sobre stock ALSEA." 
 text_generic2 = "" 
+"""
 
 # %% Identify option 
 
@@ -405,10 +407,11 @@ Using MonteCarlo Simulation (norm | kde)
     
     return result 
 # %% 
+"""
 text_european = "Calculate european option price for ALSEA stock with maturity in 1 y, strike of 50, volatility of 0.2"
 text = text_european
 # %%
-""" 
+
 text = "Calculate binary option (asset_or_nothing) price for ALSEA stock with maturity in 1 y, strike of 50, volatility of 0.2"
 if identifyGenericOption(text):
     res = optionWrapper(text)
