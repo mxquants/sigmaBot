@@ -378,6 +378,31 @@ def makeStockMCPlot(text,sender):
     temo = DBM.getTemporaryUrl(path="/stock_mc_plots",filename=filename)
     os.remove(filename)
     return temo['url'], "image"
+    
+def identifySimulatePortfolio(text):
+    # Simulate portfolio given by ... with weights ... and initial capital of ...
+    if ("simulate" in text.lower()) and ("port" in text.lower()) and ("by" in text.lower()) and ("with" in text.lower()) and ("weights" in text.lower()) and ("and" in text.lower()) and ("of" in text.lower()):
+        return 1
+    return 0
+
+
+
+def makePortfolioSimulation(text,sender):
+    import image_hosting as ih
+    import os 
+    
+    # get filename
+    filename,warning = plotPortWithBothMethods(text,sender)
+    if filename is None:
+        return warning, "text"
+    DBM = ih.DropBoxManager()
+    
+    # delete file 
+    DBM.deleteFile(path="/port_simul",filename=filename)
+    DBM.uploadFile(path="/port_simul",filename=filename)
+    temo = DBM.getTemporaryUrl(path="/port_simul",filename=filename)
+    os.remove(filename)
+    return temo['url'], "image"
 
 def identifyAvailableRequest(text):
     if "available" in text.lower():
@@ -500,6 +525,9 @@ def generateResponse(text,sender):
         
     if identifySingleEfficient(text):
         return getEfficientPort(text), 'text'
+            
+    if identifySimulatePortfolio(text):
+        return makePortfolioSimulation(text,sender)
         
     return IDontUnserstand(sender),'text'
 

@@ -241,10 +241,273 @@ def montecarloStockPlot(text,sender):
         
     filename = filename if status else None 
     return filename, warning
+# %% PORTFOLIO SIMULATION NORMAL
+
+def simulateNormalPort(tickers,T=years,m=horizontal_limit):
+    
+    n = int(360*T)
+    
+    # translate 2 yho
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    
+    # get stock names 
+    stocks = list(map(lambda x: ticker2yahoo[x],tickers))
+    
+    # read initial prices and returns 
+    returns = pd.read_pickle("db/returns.pickle")[stocks]
+    S0 = list(pd.read_pickle("db/prices.pickle")[stocks].iloc[[-1]].values[0])
+    
+    # get mean, covariance
+    mu = returns.mean().values
+    cov= returns.cov().values
+    
+    
+    sigma = [np.sqrt(cov[i][i]) for i in range(len(mu))]
+    v = np.linalg.cholesky(cov)
+    
+    # calculate correlated random numbers
+    def generateCorrNumbers(v,nvar,length):
+        z_corr = np.asmatrix(v).T.dot(np.asmatrix(np.random.normal(0,1,size=(nvar,length))))
+        return np.asarray(z_corr)
+    
+    # function to generate a single trajectory 
+    def generateTraj(S0,mu,sigma,T,n,random_list):
+        dt = T/n
+        mu_t, sigma_t = (mu-sigma**2/2)*dt, sigma*np.sqrt(dt)
+        random_list = mu_t + sigma_t*np.asarray(random_list)
+        log_increment = [np.log(S0)]+[i for i in random_list]#np.concatenate([np.array([np.log(S0)]),np.array()])
+        log_path      = np.cumsum(log_increment)
+        return np.exp(log_path)
+      
+    random_numbers=[generateCorrNumbers(v,len(mu),n) for i in range(m)]
+    
+    _stocks = [[] for i in range(len(mu))]
+    for rnd in random_numbers:
+        for i in range(len(mu)):
+            _stocks[i].append(generateTraj(S0[i],mu[i],sigma[i],T,n,rnd[i]))
+            
+        
+    return [pd.DataFrame(np.asmatrix(s).T) for s in _stocks]
+
+def plotNormalPort(capital,tickers,weights,T=years,m=horizontal_limit):
+    import matplotlib.pyplot as plt
+    
+    # get simulated stocks 
+    simulation = simulateNormalPort(tickers,T,m)
+    
+    # get initial number of stocks
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    stocks = list(map(lambda x: ticker2yahoo[x],tickers))
+    last_prices = pd.read_pickle("db/prices.pickle")[stocks].iloc[[-1]].values[0]
+    n_stocks = list(map(lambda x: np.int(x),np.array(weights)*capital / last_prices))
+    
+    # get remanent
+    remanent = capital - np.sum(np.array(n_stocks)*last_prices)
+    
+    # get values 
+    port_value = np.array(m*[0])
+    port_vect = []
+    c = 1
+    for i,j in zip(simulation,n_stocks):
+        if len(port_vect) == 0:
+            port_vect  = j*i
+        else:
+            port_vect = port_vect+j*i
+        port_value = port_value + j*i.iloc[-1,:].values
+        c += 1
+    
+    temp = port_vect.iloc[-1] + remanent
+    result_string = 'Information at maturity.\n\n\t> Min value: {}\n\t> Max value: {}\n\t> Mean: {}\n\t> Std: {}'.format(
+            temp.min(),temp.max(),temp.mean(),temp.std())
+    
+    for tr in port_vect:
+        one = port_vect[tr] + remanent
+        plt.plot(np.arange(len(one)),one,alpha=0.7)
+    plt.plot(port_vect.mean(1).values+remanent,'r')
+    plt.title('Portfolio Simulation assuming normal correlated variables')
+    plt.xlabel("Days")
+    plt.ylabel("Value (in MXN)")
+    plt.grid(True)
+    
+    plt.show()
+    
+    
+# Simulate porfolio given by [] with weights [] and initial capital of []    
 # %% 
+def mTrajectoriesPortKde(data,T=years,n=years*360,m=horizontal_limit):
+    
+
+    kde = getTheKDE(data["port_return"])
+    
+    S0 = data['port_value'][-1]
+    
+    def generateRandom(n,x):
+        return list(kde.sample(n,random_state=x).reshape(n,))
+    
+    # generate random numbers 
+    rnd = list(map(lambda x: generateRandom(n,x=x),range(m)))
+    #reference = getKDE(returns)
+    #rnd = list(map(lambda x: getRandomVect(n,reference),range(m)))
+    
+    # logarithmic increment and path 
+    log_increment = [np.concatenate([np.array([np.log(S0)]),i]) for i in rnd]
+    log_path      = [np.cumsum(i) for i in log_increment]
+    
+    return pd.DataFrame(np.asmatrix([np.exp(i) for i in log_path]).T)
+
+
+def simulateKdePort(tickers,n_stocks,T=years,m=horizontal_limit):
+    
+    n = int(360*T)
+    
+    # translate 2 yho
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    
+    # get stock names 
+    stocks = list(map(lambda x: ticker2yahoo[x],tickers))
+    
+    # get prices
+    prices = pd.read_pickle("db/prices.pickle")[stocks]
+    
+    # get port value 
+    port_value = prices.apply(lambda x: np.sum([i*j for i,j in zip(x,n_stocks)]),1).values
+    port_return= np.log(port_value[1:]/port_value[:-1])
+    
+    # get simulations 
+    data = {"port_value":port_value,"port_return":port_return}
+    simulations = mTrajectoriesPortKde(data,T,n,m)
+    
+    return simulations
+
+    
+
+def plotKdePort(capital,tickers,weights,T=years,m=horizontal_limit):
+    import matplotlib.pyplot as plt
+    
+    # get initial number of stocks
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    stocks = list(map(lambda x: ticker2yahoo[x],tickers))
+    last_prices = pd.read_pickle("db/prices.pickle")[stocks].iloc[[-1]].values[0]
+    n_stocks = list(map(lambda x: np.int(x),np.array(weights)*capital / last_prices))
+    
+    remanent = capital - np.sum(np.array(n_stocks)*last_prices)
+    
+    simulations = simulateKdePort(tickers,n_stocks,T,m)
+    for tr in simulations:
+        one = simulations[tr] + remanent
+        plt.plot(np.arange(len(one)),one,alpha=0.7)
+    plt.plot(simulations.mean(1).values + remanent,'r')
+    plt.title('Portfolio Simulation with KDE estimation')
+    plt.xlabel("Days")
+    plt.ylabel("Value (in MXN)")
+    plt.grid(True)
+    
+    plt.show()
+    
+
+
+# %%
+
+def plotPortBothMethods(filename,capital,tickers,weights,T=years,m=horizontal_limit):
+    import matplotlib.pyplot as plt
+    
+    # get initial number of stocks
+    ticker2yahoo = np.load("ticker2yahoo.npy").item()
+    stocks = list(map(lambda x: ticker2yahoo[x],tickers))
+    last_prices = pd.read_pickle("db/prices.pickle")[stocks].iloc[[-1]].values[0]
+    n_stocks = [int(np.float(w)*np.float(capital)/np.float(p)) for w,p in zip(weights,last_prices)]#list(map(lambda x: np.int(x),np.array(weights)*capital / last_prices))
+    
+    remanent = capital - np.sum(np.array(n_stocks)*last_prices)
+    
+    # get simulated stocks 
+    normal_simulation = simulateNormalPort(tickers,T,m)
+    kde_simulations = simulateKdePort(tickers,n_stocks,T,m)
+    
+    # Create plot     
+    fig, ax = plt.subplots(nrows=2,ncols=1,figsize=(10,7))
+    
+    # Normal plot 
+    plt.subplot(2,1,1)
+    
+    
+        # get values 
+    port_value = np.array(m*[0])
+    port_vect = []
+    c = 1
+    for i,j in zip(normal_simulation,n_stocks):
+        if len(port_vect) == 0:
+            port_vect  = j*i
+        else:
+            port_vect = port_vect+j*i
+        port_value = port_value + j*i.iloc[-1,:].values
+        c += 1
+    
+    #temp = port_vect.iloc[-1] + remanent
+    #result_string = 'Information at maturity.\n\n\t> Min value: {}\n\t> Max value: {}\n\t> Mean: {}\n\t> Std: {}'.format(
+    #        temp.min(),temp.max(),temp.mean(),temp.std())
+    
+    for tr in port_vect:
+        one = port_vect[tr] + remanent
+        plt.plot(np.arange(len(one)),one,alpha=0.7)
+    plt.plot(port_vect.mean(1).values+remanent,'r')
+    plt.title('Portfolio Simulation assuming normal correlated variables')
+    plt.ylabel("Value (in MXN)")
+    plt.grid(True)
+    
+    
+    # KDE plot
+    plt.subplot(2,1,2)
+    
+    for tr in kde_simulations:
+        one = kde_simulations[tr] + remanent
+        plt.plot(np.arange(len(one)),one,alpha=0.7)
+    plt.plot(kde_simulations.mean(1).values + remanent,'b')
+    plt.title('Portfolio Simulation with KDE estimation')
+    plt.xlabel("Days")
+    plt.ylabel("Value (in MXN)")
+    plt.grid(True)
+    
+    plt.savefig(filename,dpi=500) 
+    plt.close()
+    
+    return 1
+
+def plotPortWithBothMethods(text,sender):
+    """
+    Simulate porfolio given by [] with weights [] and initial capital of []    
+    """
+    
+    def getStockList(text):
+        return [i.upper() for i in text.split("with")[0].split("by")[-1].replace(","," ").split(" ") if i != ""]
+    
+    def getWeights(text):
+        return [i.upper() for i in text.split("and")[0].split("weights")[-1].replace(","," ").split(" ") if i != ""]
+    
+    def getCapital(text):
+        return np.float(text.split(" of")[-1])
+    
+    
+    filename = 'port_simul_{}.png'.format(str(sender))
+    warning  = None
+    
+    try:
+        
+        capital  = getCapital(text)
+        weights  = getWeights(text)
+        tickers  = getStockList(text)
+        
+        status = plotPortBothMethods(filename,capital,tickers,weights,T=1/3,m=100)
+        
+    except: 
+        warning = "Something happened."
+        status = 0
+        
+    
+    filename = filename if status else None 
+    return filename, warning
 
 
 # %% 
+#plotBothMethods(capital,tickers,weights,T=1/2,m=500)
 
-
-# %% 
+# %%  
