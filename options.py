@@ -166,6 +166,66 @@ def assetOrNothingBS(_kind='call'):
     if _kind == 'put':
         return p['St']*norm.cdf(-d(1))
 
+# %% Barrier Options BS 
+
+def upAndOutBs(_kind='call'):
+    p = getParameters()
+    e = np.exp(-p['r']*p['T'])
+    
+    if _kind == 'call':
+        if p['B']>p['K']:
+            return  p['St']*(norm.cdf(d(1))-norm.cdf(d(3))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*(norm.cdf(d(6))-norm.cdf(d(8))))-e*p['K']*(norm.cdf(d(2))-norm.cdf(d(4))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*(norm.cdf(d(5))-norm.cdf(d(7))))
+        return None
+    
+    if _kind == 'put':
+        if p['B']>p['K']:
+            return -p['St']*(norm.cdf(-d(1))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(d(8)))+e*p['K']*(norm.cdf(-d(2))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(d(7)))
+        return -p['St']*(norm.cdf(-d(3))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(d(8)))+e*p['K']*(norm.cdf(-d(4))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(d(7)))
+    
+def upAndInBs(_kind='call'):
+    p = getParameters()
+    e = np.exp(-p['r']*p['T'])
+    
+    if _kind == 'call':
+        if p['B']>p['K']:
+            return p['St']*(norm.cdf(d(3))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*(norm.cdf(d(6))-norm.cdf(d(8))))-e*p['K']*(norm.cdf(d(4))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*(norm.cdf(d(5))-norm.cdf(d(7))))
+        return None 
+    
+    if _kind == 'put':
+        if p['B']>p['K']:
+            return -p['St']*(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(d(8))+e*p['K']*(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(d(7))
+        return -p['St']*(norm.cdf(-d(1))-norm.cdf(d(-3))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(d(8)))+e*p['K']*(norm.cdf(-d(2))-norm.cdf(-d(4))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(d(7)))
+
+
+def downAndOutBs(_kind='call'):
+    p = getParameters()
+    e = np.exp(-p['r']*p['T'])
+    
+    if _kind == 'call':
+        if p['B']>p['K']:
+            return p['St']*(norm.cdf(d(3))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(-d(6)))-e*p['K']*(norm.cdf(d(4))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(-d(5)))
+        return p['St']*(norm.cdf(d(1))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(-d(8)))-e*p['K']*(norm.cdf(d(2))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(-d(7)))
+    
+    if _kind == 'put':
+        if p['B']>p['K']:
+            return -p['St']*(norm.cdf(d(3))-norm.cdf(d(1))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*(norm.cdf(d(8))-norm.cdf(d(6))))+e*p['K']*(norm.cdf(d(4))-norm.cdf(d(2))-(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*(norm.cdf(d(7))-norm.cdf(d(5))))
+        return None
+
+
+def downAndInBs(_kind='call'):
+    p = getParameters()
+    e = np.exp(-p['r']*p['T'])
+    
+    if _kind == 'call':
+        if p['B']>p['K']:
+            return p['St']*(norm.cdf(d(1))-norm.cdf(d(3))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(d(6)))-e*p['K']*(norm.cdf(d(2))-norm.cdf(d(4))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(-d(5)))
+        return p['St']*(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*norm.cdf(-d(8))-e*p['K']*(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*norm.cdf(-d(7))
+    
+    if _kind == 'put':
+        if p['B']>p['K']:
+            return -p['St']*(norm.cdf(-d(5))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)+1)*(norm.cdf(d(8))-norm.cdf(d(6))))+e*p['K']*(norm.cdf(-d(4))+(p['B']/p['St'])**((2*p['r']/p['sigma']**2)-1)*(norm.cdf(d(7))-norm.cdf(d(5))))
+        return None
+    
 # %% Any option with BS
 
 def getBlackScholesValuation(_type, _kind):
@@ -178,8 +238,21 @@ def getBlackScholesValuation(_type, _kind):
     
     if 'asset_or_nothing' in _type:
         return assetOrNothingBS(_kind)
+    
+    if 'barrier_down_and_out' in _type:
+        return downAndOutBs(_kind)
+    
+    if 'barrier_up_and_out' in _type:
+        return upAndOutBs(_kind)    
+    
+    if 'barrier_down_and_in' in _type:
+        return downAndInBs(_kind)
         
-    return "Option not detected!"
+    if 'barrier_up_and_in' in _type:
+        return upAndInBs(_kind)
+
+    
+    return "Option not detected!"   
 
 # %% MonteCarlo Method for each option
 
@@ -253,48 +326,117 @@ def upAndOutMC(_kind='call',_simul="norm"):
     
     df = f(p["stock"],n=360*p["T"],m=500,zero_mean=True)
     
+    def compare(x,b,_min):
+        return (x>_min) and (x>b) and (_min<b)
+    
+    # kill up and out
+    kill = np.array([0]*len(df.columns))
+    min_vector = df.loc[0]
+    for i in range(1,len(df)):
+        one_row = df.loc[i]
+        min_vector = df.loc[0:i].min(0)
+        kill = kill + np.array([compare(x,p["B"],_min) for x,_min in zip(one_row,min_vector)])
+        
+    for tr,ref in zip(df.columns,(kill == 0)):
+        if ref:
+            continue 
+        df.loc[:,tr] = 0
+          
+    
     if _kind == 'call':
-        if p['B']>p['K']:
-            return 1
-        return None
+        return np.exp(-p['r']*(p['T']))*((df.iloc[-1]-p["K"]).apply(lambda x: 0 if x <=0 else x).mean())
     
     if _kind == 'put':
-        if p['B']>p['K']:
-            return 1
-        return 1
+        return np.exp(-p["r"]*(p["T"]))*((p["K"]-df.iloc[-1]).apply(lambda x: 0 if x <=0 else x).mean())
 
 def upAndInMC(_kind='call',_simul="norm"):
     p = getParameters()
-    e = np.exp(-p['r']*p['T'])
+    #e = np.exp(-p['r']*p['T'])
+    
+    BS  = europeanMC(_kind,_simul)
+    UO = upAndOutMC(_kind,_simul)
+    
+    """
+    
+    if _simul == "kde":
+        f = mTrajectoriesKde
+    else:
+        f = mTrajectoriesNormal
+    
+    
+    df = f(p["stock"],n=360*p["T"],m=500,zero_mean=True)
+    
+    def compare(x,b,_min):
+        return ((x>_min) and (x>b) and (_min<b))==False
+    
+    # kill up and out
+    kill = np.array([0]*len(df.columns))
+    min_vector = df.loc[0]
+    for i in range(1,len(df)):
+        one_row = df.loc[i]
+        min_vector = df.loc[0:i].min(0)
+        kill = kill + np.array([compare(x,p["B"],_min) for x,_min in zip(one_row,min_vector)])
+        
+    for tr,ref in zip(df.columns,(kill == 0)):
+        if ref:
+            continue 
+        df.loc[:,tr] = 0
+          
     
     if _kind == 'call':
-        if p['B']>p['K']:
-            return 1
-        return None 
+        return np.exp(-p['r']*(p['T']))*((df.iloc[-1]-p["K"]).apply(lambda x: 0 if x <=0 else x).mean())
     
     if _kind == 'put':
-        if p['B']>p['K']:
-            return 1
-        return 1
+        return np.exp(-p["r"]*(p["T"]))*((p["K"]-df.iloc[-1]).apply(lambda x: 0 if x <=0 else x).mean())
+    """
+    
+    return BS-UO
         
 def downAndOutMC(_kind='call',_simul="norm"):
     p = getParameters()
-    e = np.exp(-p['r']*p['T'])
+    #e = np.exp(-p['r']*p['T'])
+    
+    
+    if _simul == "kde":
+        f = mTrajectoriesKde
+    else:
+        f = mTrajectoriesNormal
+    
+    
+    df = f(p["stock"],n=360*p["T"],m=500,zero_mean=True)
+    
+    def compare(x,b,_max):
+        return (x<_max) and (x<b) and (_max>b)
+    
+    # kill up and out
+    kill = np.array([0]*len(df.columns))
+    max_vector = df.loc[0]
+    for i in range(1,len(df)):
+        one_row = df.loc[i]
+        max_vector = df.loc[0:i].max(0)
+        kill = kill + np.array([compare(x,p["B"],_max) for x,_max in zip(one_row,max_vector)])
+        
+    for tr,ref in zip(df.columns,(kill == 0)):
+        if ref:
+            continue 
+        df.loc[:,tr] = 0
+          
     
     if _kind == 'call':
-        if p['B']>p['K']:
-            return 1
-        return 1
+        return np.exp(-p['r']*(p['T']))*((df.iloc[-1]-p["K"]).apply(lambda x: 0 if x <=0 else x).mean())
     
     if _kind == 'put':
-        if p['B']>p['K']:
-            return 1
-        return None 
+        return np.exp(-p["r"]*(p["T"]))*((p["K"]-df.iloc[-1]).apply(lambda x: 0 if x <=0 else x).mean())
+    
+    
         
 def downAndInMC(_kind='call',_simul="norm"):
     p = getParameters()
     e = np.exp(-p['r']*p['T'])
     
+    BS  = europeanMC(_kind,_simul)
+    DO = downAndOutMC(_kind,_simul)
+    """
     if _kind == 'call':
         if p['B']>p['K']:
             return 1
@@ -304,7 +446,8 @@ def downAndInMC(_kind='call',_simul="norm"):
         if p['B']>p['K']:
             return 1
         return None
-    
+    """
+    return BS - DO
 
 # %% Any option with MonteCarlo
 
