@@ -586,6 +586,3 @@ def generateHTML():
 
 
 # %% 
-
-
-|1# %% 
