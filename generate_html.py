@@ -573,7 +573,7 @@ def returnHTML():
     
 def generateHTML():
     html_file = open("index.html","w")
-    html_file.write(complete_html)
+    html_file.write(returnHTML())
     html_file.close()
 
 
