@@ -271,6 +271,11 @@ def getProfilePic(sender):
         return "https://lh3.googleusercontent.com/UBz80Hwz87KC4Aw3q1_F9gZjLz3NyDagC52GtubICL84ERRrq6vwOPZcMULqaSJFcjaOWBA1KEUNPW6y4VrfqkzsZrxEX6xZyhzGnJ6u_u50CVlgIGA6oTSml2TucDvZ7MvcfyY7mK99QH3Ug2G7sHt3Kfx6uZX_YNfe-rN_kECdoQCz1MHjx3w0NflEcoc0muX3CTVcMUnrVjJQvEP5DaheeApIJEKCNNIrvfFt5DChj1VPtaitFyYejfuQKc2OjlBrMPELpanQPADvoKUepxRiVAyn-xmUSw_xcdLbbGu8y8r9mz2dVyiasepnakwZNzuRRHbC4Byv66kQ_Pqv4S2lHo5OIK65pnQN0RxJNnkWXDgelmrvmAVL4E4vcrg90QhYuL4GNyH7AsCKNegTPE5kjNvmrfNpY-DxDjVyCQMBkxg9rcpmvtEKTx3BYyPnWi0w9l8WjugPjPMSrgZNiFclD7i3DLgTCzLtf0PSksLmv6exPHswnTA5JKU200yIgQKhf3b3THCF4YpqMUVQvlyxRL6KVbH0uJN_un5ZfbXuuppcauvs1O_XEYoOHTkbgSPMGuAWMjT2CuTDRpmQ3P_rGNiEanQtM-Ypx-e5Ax0Xrkc=s170-no"
     return getUserProfilePic(sender)
 
+def identifySharpe(text):
+    if "sharpe" in text.lower():
+        return 1
+    return 0 
+
 def IDontUnserstand(sender):
     _user = getUserInfo(sender).get('first_name')
     user_name =  _user if _user is not None else 'Pythonist'
@@ -507,6 +512,9 @@ def generateResponse(text,sender):
         
     if identifyAvailableRequest(text):
         return availableStocks(),'text'
+        
+    if identifySharpe(text):
+        return sharpeWrapper(text), "text"
     
     if identifyStockPlot(text):
         return makeStockPlot(text,sender),'image'
