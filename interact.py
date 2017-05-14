@@ -514,6 +514,9 @@ def generateResponse(text,sender):
     if identifyCovarPlot(text):
         return makeCovarPlotReal(text,sender),'image'
         
+    if identifySimulatePortfolio(text):
+        return makePortfolioSimulation(text,sender)
+        
     if identifyMonteCarloStockPlot(text):
         return makeStockMCPlot(text,sender)
         
@@ -525,9 +528,6 @@ def generateResponse(text,sender):
         
     if identifySingleEfficient(text):
         return getEfficientPort(text), 'text'
-            
-    if identifySimulatePortfolio(text):
-        return makePortfolioSimulation(text,sender)
         
     return IDontUnserstand(sender),'text'
 
