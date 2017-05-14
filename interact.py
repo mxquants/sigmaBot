@@ -12,7 +12,7 @@ from markowitz import *
 from data_operations import trulyAvailableStocks
 from montecarlo_methos import *
 from sharpe import * 
-
+from options import * 
 # %% Sample message
 
 def generateSampleData(message='integrate x from 0 to 5'):
@@ -484,6 +484,28 @@ def identifySingleEfficient(text):
         return 1
     return 0
         
+
+
+def identifyGenericOption(text):
+    if ("option" in text.lower()) and ("stock" in text.lower()):
+        return 1
+    return 0
+
+def identifyEuropean(text):
+    if ("option" in text.lower()) and ("european" in text.lower()) and ("stock" in text.lower()):
+        return 1
+    return 0
+
+def identifyBarrier(text):
+    if ("option" in text.lower()) and ("barrier" in text.lower()) and ("stock" in text.lower()):
+        return 1
+    return 0
+    
+def identifyBinary(text):
+    if ("option" in text.lower()) and ("binary" in text.lower()) and ("stock" in text.lower()):
+        return 1
+    return 0 
+
         
 # %% Generate Response
 
@@ -538,6 +560,14 @@ def generateResponse(text,sender):
     if identifySingleEfficient(text):
         return getEfficientPort(text), 'text'
         
+    if identifyGenericOption(text):
+        try:
+            result = optionWrapper(text)
+        except:
+            result = "What?"
+        return result, 'text'
+        
+    
     return IDontUnserstand(sender),'text'
 
 # %% 

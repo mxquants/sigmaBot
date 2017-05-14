@@ -70,14 +70,16 @@ def getRandomVect(n,reference):
 
 # %% Monte-Carlo Simulations 
 # pd.DataFrame({"k":kde.sample(1000).reshape(1000,)}).plot() 
-def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
+def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit,zero_mean=False):
     
+    n = int(n)
     # import translator
     ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
     # get the stock historic return 
     returns = pd.read_pickle("db/returns.pickle")[ticker2yahoo[stock]]
-    kde = getTheKDE(returns.values)
+    returns_mean = returns.values.mean()
+    kde = getTheKDE(returns.values - (zero_mean*returns_mean))
     
     S0 = (pd.read_pickle("db/prices.pickle")[ticker2yahoo[stock]].values[-1] if S0 is None else S0)
     
@@ -93,16 +95,17 @@ def mTrajectoriesKde(stock,S0=None,T=years,n=years*360,m=horizontal_limit):
     log_increment = [np.concatenate([np.array([np.log(S0)]),i]) for i in rnd]
     log_path      = [np.cumsum(i) for i in log_increment]
     
-    return pd.DataFrame(np.asmatrix([np.exp(i) for i in log_path]).T)
+    return pd.DataFrame(np.asmatrix([np.exp(i) for i in log_path]).T) 
 
-def mTrajectoriesNormal(stock,S0=None,mu=None,sigma=None,n=years*360,m=horizontal_limit):
+def mTrajectoriesNormal(stock,S0=None,mu=None,sigma=None,n=years*360,m=horizontal_limit,zero_mean=False):
     
+    n = int(n)
     # import translator
     ticker2yahoo = np.load("ticker2yahoo.npy").item()
     
     # get the stock historic return 
     returns = pd.read_pickle("db/returns.pickle")[ticker2yahoo[stock]]
-    mu = 360*returns.mean() if mu is None else mu
+    mu = 360*returns.mean() if not zero_mean else 0
     sigma = np.sqrt(360)*returns.std() if sigma is None else sigma 
     
     # last price 
