@@ -478,12 +478,12 @@ Probability of generating returns (final value > initial capital):
     
     Using Normal Assumptions: {:0.4f} %
     Using Kernel Density Estimatior: {:0.4f} %
-""".format(100*prop_normal,100*prop_kde)
+""".format(prop_normal,prop_kde)
              
     plt.text(0.5,0.5,res_str,verticalalignment='center', horizontalalignment='center')
     plt.axis('off')             
                             
-    plt.savefig(filename,dpi=500) 
+    plt.savefig(filename,dpi=100) 
     plt.close()
     
     return 1
