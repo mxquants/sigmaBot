@@ -164,7 +164,7 @@ class Markowitz(object):
         if self.port_opt is None: 
             self.getItDone(tickers)
         
-        fig = plt.figure(figsize=(7,5))
+        fig = plt.figure(figsize=(8,6))
         ax = fig.add_subplot(111)
         
         fig.suptitle('Markowitz Portfolio Theory - Combinations and Efficient Frontier', fontsize=14, fontweight='bold')
@@ -179,7 +179,7 @@ class Markowitz(object):
         plt.ylabel('Daily log-returns (%)')
         plt.grid()
         
-        plt.savefig(filename,dpi=250) 
+        plt.savefig(filename,dpi=300) 
         plt.close()
         #plt.show()
         
