@@ -13,6 +13,22 @@ from interact import *
 
 
 from generate_html import returnHTML
+
+# %% 
+
+
+def readJson(filename):
+    import json
+    with open(filename) as file:
+        data = json.load(file)
+    return data 
+
+def saveJson(variable,filename):
+    import io, json
+    with io.open(filename, 'w', encoding='utf-8') as f:
+      f.write(json.dumps(variable, ensure_ascii=False))
+      
+      
 # %% Declare App 
 
 app = Flask(__name__)
@@ -76,18 +92,22 @@ def getUrl():
 
 def generalFilter(data):
     import numpy as np
+    import datetime as dt
     
+    #run_time = dt.datetime.now().strftime('%Y%m%d %H:%M:%S')
     
     def createEntryLog():
-        entry_log =[]
-        np.save('entry_log.npy',entry_log)
-    
+        #entry_log =[]
+        #np.save('entry_log.npy',entry_log)
+        entry_log = {}
+        saveJson(entry_log,'entry_log.txt')
+        
     # read logs 
     try:
-        entry_log = list(np.load('entry_log.npy'))
+        entry_log = readJson('entry_log.txt')#list(np.load('entry_log.npy'))
     except:
         createEntryLog()
-        entry_log = list(np.load('entry_log.npy'))
+        entry_log = entry_log = readJson('entry_log.txt')#list(np.load('entry_log.npy'))
         
     # get entries 
     entries = data.get('entry')
@@ -95,12 +115,14 @@ def generalFilter(data):
         return data
     
     # get new ids 
-    good_entries = [entry for entry in entries if (str(entry) not in entry_log)]
-    entry_log = list(entry_log)+[str(entry) for entry in entries]
-    
+    good_entries = [entry for entry in entries if (str(entry) not in entry_log.keys())]
+    #entry_log = list(entry_log)+[str(entry) for entry in entries]
+    for entry in entries:
+        entry_log[str(entry)] = dt.datetime.now().strftime('%Y%m%d %H:%M:%S')
+        
     # save 
-    np.save('entry_log.npy',entry_log)
-    
+    #np.save('entry_log.npy',entry_log)
+    saveJson(entry_log,'entry_log.txt')
     data['entry'] = good_entries
     return data
 
