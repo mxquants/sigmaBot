@@ -28,4 +28,4 @@ six==1.10.0
 sklearn==0.0
 typing==3.6.1
 urllib3==1.21
-Werkzeug==0.12.1
+Werkzeug==0.15.3
